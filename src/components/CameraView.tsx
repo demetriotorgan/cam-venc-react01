@@ -19,6 +19,8 @@ const CameraView = () => {
     const [recorteUrl, setRecorteurl] = useState<string | null>(null);
     const [processandoRecorte, setProcessandoRecorte] = useState(false);
 
+    const [diagnostico, setDiagnostico] = useState<object | null>(null);
+
     useEffect(() => {
         return () => {
             cameraRef.current?.encerrarCamera();
@@ -75,7 +77,7 @@ const CameraView = () => {
                 return;
             }
             setErro('');
-            
+
             //1. Captura a imagem da camera
             const blob = await camera.capturarFoto();
 
@@ -90,7 +92,7 @@ const CameraView = () => {
 
             //4. Atualiza a imagem original exibida
             setFotoUrl(novaFotoUrl);
-            
+
             //5. Executar recorte usando imagem carregada
             await executarRecorte(imagemCarregada);
 
@@ -108,12 +110,38 @@ const CameraView = () => {
         if (!video || !moldura || !imagem) {
             setErro('Não foi possível preparar os elementos para recorte')
             return;
-        }       
-        
+        }
+
         setProcessandoRecorte(true);
         setErro('');
 
         try {
+            const videoRect = video.getBoundingClientRect();
+            const molduraRect = moldura.getBoundingClientRect();
+
+            setDiagnostico({
+                proporcaoVideo: Number(
+                    (videoRect.width / videoRect.height).toFixed(4)
+                ),
+                proporcaoImagem: Number(
+                    (imagem.naturalWidth / imagem.naturalHeight).toFixed(4)
+                ),
+                proporcaoMoldura: Number(
+                    (molduraRect.width / molduraRect.height).toFixed(4)
+                ),
+                video: {
+                    largura: videoRect.width,
+                    altura: videoRect.height,
+                },
+                imagem: {
+                    largura: imagem.naturalWidth,
+                    altura: imagem.naturalHeight,
+                },
+                moldura: {
+                    largura: molduraRect.width,
+                    altura: molduraRect.height,
+                },
+            });
             const resultado = await recortarImagem({ video, moldura, imagem });
             const novaRecorteUrl = URL.createObjectURL(resultado.blob);
             setRecorteurl(novaRecorteUrl);
@@ -132,7 +160,7 @@ const CameraView = () => {
                     ? error.message
                     : 'Não foi possível recortar a imagem.',
             );
-        } finally{
+        } finally {
             setProcessandoRecorte(false);
         }
     }
@@ -243,15 +271,24 @@ const CameraView = () => {
                                 <div className='preview-card'>
                                     <img src={recorteUrl} alt="" />
                                 </div>
-                            ):(
+                            ) : (
                                 <div className="image-placeholder">
-                                <span aria-hidden="true">▧</span>
-                                <p>{processandoRecorte ? 'Processando recorte' : 'Nenhum recorte disponivel' }</p>
-                            </div>
-                            )}                            
+                                    <span aria-hidden="true">▧</span>
+                                    <p>{processandoRecorte ? 'Processando recorte' : 'Nenhum recorte disponivel'}</p>
+                                </div>
+                            )}
                         </article>
                     </div>
                 </section>
+                {diagnostico && (
+                    <section className="diagnostico-section">
+                        <h2>Diagnóstico da geometria</h2>
+
+                        <pre>
+                            {JSON.stringify(diagnostico, null, 2)}
+                        </pre>
+                    </section>
+                )}
             </section>
 
             <footer className="camera-footer">
