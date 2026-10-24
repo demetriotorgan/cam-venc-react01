@@ -36,9 +36,7 @@ export async function recortarImagem({
     throw new Error('A imagem original não possui dimensões válidas.');
   }
 
-  // Calcula as posições dos elementos na tela.
-  const videoRect = video.getBoundingClientRect();
-  const molduraRect = moldura.getBoundingClientRect();
+   
 
   // console.group('[INSPEÇÃO DO RECORTE] 1. Elementos');
 
@@ -63,21 +61,24 @@ export async function recortarImagem({
 
   // console.groupEnd();
 
+  // Calcula as posições dos elementos na tela.
+
+  const videoRect = video.getBoundingClientRect();
+  const molduraRect = moldura.getBoundingClientRect();
+
   const coordenadas = calcularRecorte({
-    video: {
+    areaVisualizacao: {
       esquerda: videoRect.left,
       topo: videoRect.top,
       largura: videoRect.width,
       altura: videoRect.height,
     },
-
     moldura: {
       esquerda: molduraRect.left,
       topo: molduraRect.top,
       largura: molduraRect.width,
       altura: molduraRect.height,
     },
-
     imagem: {
       largura: imagem.naturalWidth,
       altura: imagem.naturalHeight,
