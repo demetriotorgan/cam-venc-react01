@@ -141,6 +141,10 @@ const CameraView = () => {
                     largura: molduraRect.width,
                     altura: molduraRect.height,
                 },
+                dimensoesReaisVideo: {
+                    largura: video.videoWidth,
+                    altura: video.videoHeight,
+                },
             });
             const resultado = await recortarImagem({ video, moldura, imagem });
             const novaRecorteUrl = URL.createObjectURL(resultado.blob);
