@@ -1,5 +1,6 @@
 import './App.css'
 import CameraView from './components/CameraView'
+import TesteRF28 from './components/laboratorio-rf28/TesteRF28'
 import OCRtest from './components/OCRteste'
 
 function App() {
@@ -8,7 +9,8 @@ function App() {
   return (
     <>
       {/* <CameraView /> */}
-      <OCRtest />
+      {/* <OCRtest /> */}
+      <TesteRF28 />
     </>
   )
 }
