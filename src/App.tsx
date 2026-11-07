@@ -8,9 +8,9 @@ function App() {
 
   return (
     <>
-      {/* <CameraView /> */}
+      <CameraView />
       {/* <OCRtest /> */}
-      <TesteRF28 />
+      {/* <TesteRF28 /> */}
     </>
   )
 }
